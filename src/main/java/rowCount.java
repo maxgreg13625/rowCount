@@ -87,8 +87,8 @@ public class rowCount{
 		if(args.length!=4 && args.length!=3){
 			printArgs(args);
 			System.err.println("Usage: <tableName> <startKey> <endKey> [<columnFamily:column>]");
-            System.exit(1);
-        }else{
+			System.exit(1);
+		}else{
 			tableName=args[0];
 			startKey=args[1];
 			endKey=args[2];
