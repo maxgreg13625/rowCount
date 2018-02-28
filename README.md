@@ -11,4 +11,4 @@ $ sh build.sh
 $ sh clean.sh
 
 # Usage
-$ sh rowCount.sh <tableName> <startKey> <endKey> [<columnFamily:column>]
+$ sh rowCount.sh tableName startKey endKey [columnFamily:column]
