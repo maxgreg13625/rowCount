@@ -10,5 +10,9 @@ $ sh build.sh
 # Clean the previous built result
 $ sh clean.sh
 
+# Befor Usage
+Create app.properties and have configuration for Kerberos Principal, Kerberos Keytab, hbase-site.xml file path, and core-site.xml file path
+
 # Usage
+Put rowCount.jar, rouCount.sh, and app.properties in the same folder
 $ sh rowCount.sh tableName startKey endKey [columnFamily:column]
