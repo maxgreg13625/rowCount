@@ -5,6 +5,8 @@ import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -98,13 +100,40 @@ public class rowCount{
 		}
 
 		readConfiguration();
-		rowCount(tableName, startKey, endKey, column);
+		//rowCount(tableName, startKey, endKey, column);
+		rowCountNew(tableName, startKey, endKey, column);
+	}
+
+	public static long rowCountNew(String tableName, String startKey, String endKey, String column){
+		long rowCount=0;
+		HBaseOp tableOp=new HBaseOp(_kerberosPrincipal, _kerberosKeytab, _hbaseSiteFile, _coreSiteFile, tableName);
+
+		try{
+			String[] columnDetail=column.split(":");
+			//start scan
+			String startTime=new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
+			List<String> result=tableOp.getScanResult(startKey, endKey, columnDetail[0], columnDetail[1]);
+			//end scan
+			String endTime=new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
+
+			rowCount=result.size();
+
+			//print result
+			System.out.println(String.format("Start Time: %s", startTime));
+			System.out.println(String.format("Row Count for %s %s between %s and %s: %d", 
+				tableName, column, startKey, endKey, rowCount));
+			System.out.println(String.format("Start Time: %s", endTime));
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+		}
+
+		return rowCount;
 	}
 
 	public static long rowCount(String tableName, String startKey, String endKey, String column){
 		long rowCount=0;
 
-		try {
+		try{
 			if(startKey!="" && endKey!=""){
 				//set target table
 				HTable table=new HTable(getConfiguration(), tableName);
@@ -142,9 +171,9 @@ public class rowCount{
 					tableName, column, startKey, endKey, rowCount));
 				System.out.println(String.format("Start Time: %s", endTime));
 			}
-		}catch (IOException e){
+		}catch(IOException e){
 			System.out.println(e.getMessage());
-	    }
+		}
 		return rowCount;
 	}
 }
