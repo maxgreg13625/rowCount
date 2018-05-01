@@ -90,28 +90,27 @@ public class HBaseOp{
 
 		return conf;
 	}
-	
+
 	public List<String> getScanResult(String startKey, String endKey, String columnFamily, String columnQualifier){
 		ResultScanner resultScanner=null;
 		List<String> resultStringList=new ArrayList();
 
 		try{
 			Scan scan=new Scan();
-
-			if(startKey!="" && endKey!=""){
-				scan.setStartRow(Bytes.toBytesBinary(startKey));
-				scan.setStopRow(Bytes.toBytesBinary(endKey));
+			//set start and end key
+			scan.setStartRow(Bytes.toBytesBinary(startKey));
+			scan.setStopRow(Bytes.toBytesBinary(endKey));
+			if(!columnFamily.equals("") && !columnQualifier.equals("")){
 				scan.addColumn(Bytes.toBytes(columnFamily), Bytes.toBytes(columnQualifier));
-				resultScanner=this._targetTable.getScanner(scan);
 			}else{
 				//hbase(main):001:0> f_keyonly=org.apache.hadoop.hbase.filter.KeyOnlyFilter.new();
 				//hbase(main):002:0* f_firstkey=org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter.new();
 				//hbase(main):003:0* flist=org.apache.hadoop.hbase.filter.FilterList.new([f_keyonly, f_firstkey]);
 				//hbase(main):004:0* scan 'tableName', {STARTROW=>'startKey',ENDROW=>'endKey',FILTER=>flist}
-
 				//a filter that will only return the first KV from each row.
 				scan.setFilter(new FirstKeyOnlyFilter());
 			}
+			resultScanner=this._targetTable.getScanner(scan);
 		}catch(IOException ioe){
 			System.out.println("Caught IOException.");
 			System.out.println(ioe.getMessage());

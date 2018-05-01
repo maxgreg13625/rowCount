@@ -107,12 +107,19 @@ public class rowCount{
 	public static long rowCountNew(String tableName, String startKey, String endKey, String column){
 		long rowCount=0;
 		HBaseOp tableOp=new HBaseOp(_kerberosPrincipal, _kerberosKeytab, _hbaseSiteFile, _coreSiteFile, tableName);
+		String[] columnDetail=null;
+		List<String> result=null;
 
 		try{
-			String[] columnDetail=column.split(":");
+			if(!column.equals(""))
+				columnDetail=column.split(":");
+			
 			//start scan
 			String startTime=new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
-			List<String> result=tableOp.getScanResult(startKey, endKey, columnDetail[0], columnDetail[1]);
+			if(columnDetail!=null)
+				result=tableOp.getScanResult(startKey, endKey, columnDetail[0], columnDetail[1]);
+			else
+				result=tableOp.getScanResult(startKey, endKey, "", "");
 			//end scan
 			String endTime=new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
 
